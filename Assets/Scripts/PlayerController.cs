@@ -15,23 +15,31 @@ public class PlayerController : MonoBehaviour
     private InputAction moveAction;
     public Vector2 moveDirection;
 
+    private InputAction jumpAction;
+
     public Rigidbody2D rBody2D;
+    private SpriteRenderer renderer;
+
+    private GroundSensor sensor;
 
     void Awake ()
     {
         rBody2D = GetComponent<Rigidbody2D>();
+        renderer = GetComponent<SpriteRenderer>(); //Porque es un componente que esta en el propio objeto.
+        sensor = GetComponentInChildren<GroundSensor>(); //Porque es un objeto que esta dentro de Mario.
+
+        moveAction = InputSystem.actions["Move"];
+        jumpAction = InputSystem.actions ["Jump"];
+
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         transform.position = new Vector3(0, 0, 0);
-
         transform.position = startPosition;
-
-        moveAction = InputSystem.actions["Move"];
-
-        rBody2D.AddForce(Vector2.up * jumpForce);
 
     }
 
@@ -41,15 +49,32 @@ public class PlayerController : MonoBehaviour
 
         moveDirection = moveAction.ReadValue<Vector2>();
         //transform.position = new Vector3(transform.position.x + moveDirection.x * movementSpeed * Time.deltaTime, transform.position.y, transform.position.z);
-
-        transform.Translate(new Vector3(moveDirection.x * movementSpeed * Time.deltaTime, 0, 0));
-        
+        //transform.Translate(new Vector3(moveDirection.x * movementSpeed * Time.deltaTime, 0, 0));
         //transform.position = Vector2.MoveTowards(transform.position, finalPosition, movementSpeed * Time.deltaTime);
-
         //transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + direction, transform.position.y), movementSpeed * time.deltaTime);
-  
-        
         //transform.position = new Vector3(transform.position.x + moveDirection.x * movementSpeed * Time.deltaTime, transform.position.y, transform.position.z);
-  
+        
+        rBody2D.linearVelocity = new Vector2(moveDirection.x * movementSpeed, rBody2D.linearVelocity.y);
+
+       if (moveDirection.x > 0)
+       {
+
+            renderer.flipX = false;
+
+       }
+
+       else if (moveDirection.x < 0)
+       {
+
+            renderer.flipX = true;
+
+       }
+       
+       if (jumpAction.WasPressedThisFrame() && sensor.isGrounded)
+       {
+
+            rBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+       
+       } 
     }
 }

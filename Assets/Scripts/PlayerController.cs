@@ -22,11 +22,15 @@ public class PlayerController : MonoBehaviour
 
     private GroundSensor sensor;
 
+    private Animator animator;
+
     void Awake ()
     {
         rBody2D = GetComponent<Rigidbody2D>();
         renderer = GetComponent<SpriteRenderer>(); //Porque es un componente que esta en el propio objeto.
         sensor = GetComponentInChildren<GroundSensor>(); //Porque es un objeto que esta dentro de Mario.
+
+        animator = GetComponent <Animator>();
 
         moveAction = InputSystem.actions["Move"];
         jumpAction = InputSystem.actions ["Jump"];
@@ -60,6 +64,7 @@ public class PlayerController : MonoBehaviour
        {
 
             renderer.flipX = false;
+            animator.SetBool("IsRunning", true);
 
        }
 
@@ -67,6 +72,14 @@ public class PlayerController : MonoBehaviour
        {
 
             renderer.flipX = true;
+            animator.SetBool("IsRunning", true);
+
+       }
+
+       else
+       {
+
+            animator.SetBool("IsRunning", false);
 
        }
        
@@ -75,6 +88,9 @@ public class PlayerController : MonoBehaviour
 
             rBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
        
-       } 
+       }
+
+       animator.SetBool("IsJumping", !sensor.isGrounded);
+
     }
 }

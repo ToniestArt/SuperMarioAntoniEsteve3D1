@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 
     public float movementSpeed = 5f;
     public float jumpForce = 10;
+    public float bounceForce = 4;
     public int direction = 1;
 
     public Vector3 initialPosition;
@@ -41,9 +42,9 @@ public class PlayerController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
-        transform.position = new Vector3(0, 0, 0);
-        transform.position = startPosition;
+          //Al inicio modifica la posición de mario al inicio del nivel.
+        //transform.position = new Vector3(0, 0, 0);
+        //transform.position = startPosition;
 
     }
 
@@ -86,11 +87,20 @@ public class PlayerController : MonoBehaviour
        if (jumpAction.WasPressedThisFrame() && sensor.isGrounded)
        {
 
-            rBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-       
+          rBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
        }
+
+       
 
        animator.SetBool("IsJumping", !sensor.isGrounded);
 
     }
+
+    public void Bounce()
+{
+
+  rBody2D.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
+
+
+}
 }

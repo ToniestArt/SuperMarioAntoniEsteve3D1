@@ -15,6 +15,8 @@ public class Goomba : MonoBehaviour
     public int direction = 1;
 
     private GameManager _gameManager; //Creamos la variable "_gameManager" de tipo "GameManager" el tipo es un nombre único que pertenece al nombre del script en cuestión en este caso.
+    
+    public AudioClip killPlayerSound; //Creamos un parámetro "AudioClip" dentro del componente "AudioSource" a este componente le asignamos la variable "gameMusic".
 
     void Awake()
     {
@@ -23,6 +25,8 @@ public class Goomba : MonoBehaviour
         _boxCollider = GetComponent <BoxCollider2D>();
         _animator = GetComponent <Animator>();
         _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>(); //Asignamos un valor a la variable que hemos creado con aterioridad mediante la búsqueda de un objeto que contenga el script, en este caso el objeto "Game Manager", una vez encontrado el objeto, buscamos un compoente dentro del objeto, en este caso "GameManager" el script, ahora "_gameManager" ya tiene acceso al script "GameManager" de forma que puedo utilizarlo en este script.
+        _audioSource = GetComponent<AudioSource>();
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -53,9 +57,21 @@ public class Goomba : MonoBehaviour
 
         if(collision.gameObject.CompareTag("Player"))
         {
-            Destroy(collision.gameObject);
+           
+        PlayerController _marioScript = collision.gameObject.GetComponent<PlayerController>();
+        _marioScript.MarioDeath();
         }
     }
+
+    void OnTriggerEnter2D(Collider2D collider2D)
+    {
+        if(collider2D.gameObject.CompareTag("Tuberias"))
+        {
+            direction *= -1;
+        }
+
+    }
+    
 
     public void GoombaDeath()
     {
@@ -80,5 +96,6 @@ public class Goomba : MonoBehaviour
        
 
     }
+    
 
 }

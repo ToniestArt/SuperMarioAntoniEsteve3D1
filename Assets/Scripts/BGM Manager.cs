@@ -35,4 +35,10 @@ public class BGMManager : MonoBehaviour
         _audioSource.clip = gameMusic; //El clip es el que está asignado en el componente "gameMusic" que hemos creado arriba.
         _audioSource.Play(); //Ejecuta el clip de audio.
     }
+
+  public void StopBGM() //Creamos una función la cual llamamos en VoidStart para no enguarrar ahí dentro.
+    {
+        _audioSource.Stop(); //Ejecuta el clip de audio.
+    }
+
 }

@@ -24,6 +24,12 @@ public class PlayerController : MonoBehaviour
     private GroundSensor sensor;
 
     private Animator animator;
+    private AudioSource _audioSource; //Añadimos el acceso al componente "AudioSource".
+    
+    public AudioClip jumpSound; //Creamos un parámetro "AudioClip" dentro del componente "AudioSource" a este componente le asignamos la variable "gameMusic".
+    public AudioClip killPlayerSound;
+
+    BGMManager _bGMManager;
 
     void Awake ()
     {
@@ -36,6 +42,8 @@ public class PlayerController : MonoBehaviour
         moveAction = InputSystem.actions["Move"];
         jumpAction = InputSystem.actions ["Jump"];
 
+        _audioSource = GetComponent<AudioSource>();
+        _bGMManager = GameObject.Find("BGM Manager").GetComponent<BGMManager>();
 
     }
 
@@ -88,6 +96,8 @@ public class PlayerController : MonoBehaviour
        {
 
           rBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+          JumpSound();
+
        }
 
        
@@ -103,4 +113,38 @@ public class PlayerController : MonoBehaviour
 
 
 }
+
+void JumpSound() //Creamos una función la cual llamamos en VoidStart para no enguarrar ahí dentro.
+    {
+        _audioSource.PlayOneShot(jumpSound); //Ejecuta el clip de audio.
+    }
+
+    public void MarioDeath()
+    {
+
+          _audioSource.PlayOneShot(killPlayerSound); //Ejecuta el clip de audio.
+          Destroy(gameObject, 0.5f);
+          _bGMManager.StopBGM();
+
+
+      
+       // _audioSource.PlayOneShot(deathSFX);//Reproduce un sonido una vez, en este caso el que hemos asignado a la variable "deathSFX". //Puede reproducir varios sonidos al mismo tiempo. //Sólo reproduce una vez.
+        //_audioSource.clip = deathSFC:
+        //_audioSource.Play(); //Sólo puede reproducir un sonido al mismo tiempo, sirve por ejemplo para cambiar la musica del juego. //Reproduce en bucle.
+        
+       // movementSpeed = 0;
+        //_boxCollider.enabled = false;
+
+        
+        //_animator.SetTrigger("IsDead");
+
+        //Destroy (gameObject, 1); //En este cado 0.2f es el dilay para que la muerte no sea instantanea.
+
+       // _gameManager.AddKill(); //Gracias a que antes hemos asignado el valor dentro de "_gameManager", podemos llamar a la función que hay dentro del script "GameManager" llamada "AddKill".
+         
+        
+
+
+    }
+
 }

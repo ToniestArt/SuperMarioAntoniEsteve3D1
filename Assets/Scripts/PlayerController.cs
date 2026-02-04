@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound; //Creamos un parámetro "AudioClip" dentro del componente "AudioSource" a este componente le asignamos la variable "gameMusic".
     public AudioClip killPlayerSound;
 
-    BGMManager _bGMManager;
+    private BGMManager _bGMManager;
+    private BoxCollider2D _boxCollider;
 
     void Awake ()
     {
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
 
         _audioSource = GetComponent<AudioSource>();
         _bGMManager = GameObject.Find("BGM Manager").GetComponent<BGMManager>();
+        _boxCollider = GetComponent <BoxCollider2D>();
 
     }
 
@@ -122,11 +124,12 @@ void JumpSound() //Creamos una función la cual llamamos en VoidStart para no en
     public void MarioDeath()
     {
 
-          _audioSource.PlayOneShot(killPlayerSound); //Ejecuta el clip de audio.
-          Destroy(gameObject, 0.5f);
-          _bGMManager.StopBGM();
-
-
+        _audioSource.PlayOneShot(killPlayerSound); //Ejecuta el clip de audio.
+        
+        _bGMManager.StopBGM();
+        _boxCollider.enabled = false;
+        animator.SetTrigger("Death");
+        Destroy(gameObject, 5);
       
        // _audioSource.PlayOneShot(deathSFX);//Reproduce un sonido una vez, en este caso el que hemos asignado a la variable "deathSFX". //Puede reproducir varios sonidos al mismo tiempo. //Sólo reproduce una vez.
         //_audioSource.clip = deathSFC:

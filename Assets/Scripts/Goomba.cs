@@ -1,5 +1,6 @@
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Goomba : MonoBehaviour
 {
@@ -17,7 +18,8 @@ public class Goomba : MonoBehaviour
     private GameManager _gameManager; //Creamos la variable "_gameManager" de tipo "GameManager" el tipo es un nombre único que pertenece al nombre del script en cuestión en este caso.
     
     public AudioClip killPlayerSound; //Creamos un parámetro "AudioClip" dentro del componente "AudioSource" a este componente le asignamos la variable "gameMusic".
-
+    private int _goombaHealth = 3;
+    private Slider _healthSlider;
     void Awake()
     {
         _rigidBody2D = GetComponent <Rigidbody2D>();
@@ -26,12 +28,16 @@ public class Goomba : MonoBehaviour
         _animator = GetComponent <Animator>();
         _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>(); //Asignamos un valor a la variable que hemos creado con aterioridad mediante la búsqueda de un objeto que contenga el script, en este caso el objeto "Game Manager", una vez encontrado el objeto, buscamos un compoente dentro del objeto, en este caso "GameManager" el script, ahora "_gameManager" ya tiene acceso al script "GameManager" de forma que puedo utilizarlo en este script.
         _audioSource = GetComponent<AudioSource>();
+        _healthSlider = GetComponentInChildren <Slider>();
 
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _healthSlider.maxValue = _goombaHealth;
+        _healthSlider.value = _goombaHealth;
+
         
     }
 
@@ -89,13 +95,19 @@ public class Goomba : MonoBehaviour
         Destroy (gameObject, 1); //En este cado 0.2f es el dilay para que la muerte no sea instantanea.
 
         _gameManager.AddKill(); //Gracias a que antes hemos asignado el valor dentro de "_gameManager", podemos llamar a la función que hay dentro del script "GameManager" llamada "AddKill".
-       
-
-            
-
-       
 
     }
     
+    public void takeDamage()
+    {
+        _goombaHealth--;
+        _healthSlider.value = _goombaHealth;
+
+        if(_goombaHealth <= 0)
+        {
+            GoombaDeath();
+        }
+
+    }
 
 }

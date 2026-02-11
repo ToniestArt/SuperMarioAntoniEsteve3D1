@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     public Vector2 moveDirection;
 
     private InputAction jumpAction;
+    private InputAction _pauseAction;
 
     public Rigidbody2D rBody2D;
     private SpriteRenderer renderer;
@@ -32,6 +33,8 @@ public class PlayerController : MonoBehaviour
     private BGMManager _bGMManager;
     private BoxCollider2D _boxCollider;
 
+    private GameManager _gameManager;
+
     void Awake ()
     {
         rBody2D = GetComponent<Rigidbody2D>();
@@ -42,10 +45,14 @@ public class PlayerController : MonoBehaviour
 
         moveAction = InputSystem.actions["Move"];
         jumpAction = InputSystem.actions ["Jump"];
+        _pauseAction = InputSystem.actions ["Pause"];
+        
 
         _audioSource = GetComponent<AudioSource>();
         _bGMManager = GameObject.Find("BGM Manager").GetComponent<BGMManager>();
         _boxCollider = GetComponent <BoxCollider2D>();
+        _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
+        
 
     }
 
@@ -62,6 +69,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+        if (_pauseAction.WasPressedThisFrame())
+        {
+
+            _gameManager.Pause();
+
+        }
+        if(_gameManager._pause == true)
+        {
+            return;
+        }
         moveDirection = moveAction.ReadValue<Vector2>();
         //transform.position = new Vector3(transform.position.x + moveDirection.x * movementSpeed * Time.deltaTime, transform.position.y, transform.position.z);
         //transform.Translate(new Vector3(moveDirection.x * movementSpeed * Time.deltaTime, 0, 0));
@@ -102,7 +119,7 @@ public class PlayerController : MonoBehaviour
 
        }
 
-       
+      
 
        animator.SetBool("IsJumping", !sensor.isGrounded);
 
@@ -110,7 +127,7 @@ public class PlayerController : MonoBehaviour
 
     public void Bounce()
 {
-
+    rBody2D.linearVelocity = new Vector2(rBody2D.linearVelocity.x, 0);
   rBody2D.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
 
 

@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D _boxCollider;
 
     private GameManager _gameManager;
-
+    private SceneLoader _goToGameOver;
     void Awake ()
     {
         rBody2D = GetComponent<Rigidbody2D>();
@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour
         _boxCollider = GetComponent <BoxCollider2D>();
         _gameManager = GameObject.Find("Game Manager").GetComponent<GameManager>();
         
+        _goToGameOver = GameObject.Find("GameOverLoader").GetComponent<SceneLoader>();
 
     }
 
@@ -147,7 +148,7 @@ void JumpSound() //Creamos una función la cual llamamos en VoidStart para no en
         _boxCollider.enabled = false;
         animator.SetTrigger("Death");
         Destroy(gameObject, 5);
-      
+        _goToGameOver.ChangeScene("GameOver");     
        // _audioSource.PlayOneShot(deathSFX);//Reproduce un sonido una vez, en este caso el que hemos asignado a la variable "deathSFX". //Puede reproducir varios sonidos al mismo tiempo. //Sólo reproduce una vez.
         //_audioSource.clip = deathSFC:
         //_audioSource.Play(); //Sólo puede reproducir un sonido al mismo tiempo, sirve por ejemplo para cambiar la musica del juego. //Reproduce en bucle.

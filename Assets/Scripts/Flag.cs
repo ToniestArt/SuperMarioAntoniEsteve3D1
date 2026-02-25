@@ -10,6 +10,7 @@ public class Flag : MonoBehaviour
     
     private BoxCollider2D _boxCollider;
 
+    public GameManager gameManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -17,6 +18,7 @@ public class Flag : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         _bGMManager = GameObject.Find("BGM Manager").GetComponent<BGMManager>();
         _boxCollider = GetComponent <BoxCollider2D>();
+        gameManager = GameObject.Find("Game Manager") .GetComponent<GameManager>();
 
     }
 
@@ -29,6 +31,7 @@ public class Flag : MonoBehaviour
             _audioSource.PlayOneShot(flagSound);
             _bGMManager.StopBGM();
            _audioSource.PlayOneShot(victorySound);
+           gameManager.YouWin();
 
         }
         

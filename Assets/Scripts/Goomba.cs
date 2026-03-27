@@ -98,10 +98,12 @@ public class Goomba : MonoBehaviour
 
     }
     
-    public void takeDamage()
+    public void takeDamage(int damage, Vector3 impactDirection, float impactForce)
     {
-        _goombaHealth--;
+        _goombaHealth -= damage;
         _healthSlider.value = _goombaHealth;
+
+        _rigidBody2D.AddForce(impactDirection * impactForce, ForceMode2D.Impulse)
 
         if(_goombaHealth <= 0)
         {

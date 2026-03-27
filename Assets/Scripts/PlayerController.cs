@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     private InputAction jumpAction;
     private InputAction _pauseAction;
 
+    private InputAction _attackAction;
+
     public Rigidbody2D rBody2D;
     private SpriteRenderer renderer;
 
@@ -35,6 +37,18 @@ public class PlayerController : MonoBehaviour
 
     private GameManager _gameManager;
     private SceneLoader _goToGameOver;
+
+    public GameObject bulletPrefab;
+    public Transform bulletSpawn;
+
+    public GameObject attackHitBox;
+
+    private bool _canShoot = false;
+
+    private float _powerUpDuration = 10;
+    private float _powerUpTimer;
+
+    public float attackImpactForce = 30;
     void Awake ()
     {
         rBody2D = GetComponent<Rigidbody2D>();
@@ -46,7 +60,7 @@ public class PlayerController : MonoBehaviour
         moveAction = InputSystem.actions["Move"];
         jumpAction = InputSystem.actions ["Jump"];
         _pauseAction = InputSystem.actions ["Pause"];
-        
+        _attackAction = InputSystem.actions ["Attack"];
 
         _audioSource = GetComponent<AudioSource>();
         _bGMManager = GameObject.Find("BGM Manager").GetComponent<BGMManager>();
@@ -92,7 +106,8 @@ public class PlayerController : MonoBehaviour
        if (moveDirection.x > 0)
        {
 
-            renderer.flipX = false;
+            //renderer.flipX = false;
+            transform.rotation = Quaternion.Euler(0,0,0);
             animator.SetBool("IsRunning", true);
 
        }
@@ -100,7 +115,8 @@ public class PlayerController : MonoBehaviour
        else if (moveDirection.x < 0)
        {
 
-            renderer.flipX = true;
+            //renderer.flipX = true;
+            transform.rotation = Quaternion.Euler(0,180,0);
             animator.SetBool("IsRunning", true);
 
        }
@@ -120,12 +136,32 @@ public class PlayerController : MonoBehaviour
 
        }
 
-      
-
        animator.SetBool("IsJumping", !sensor.isGrounded);
+
+        if (_attackAction.WasPressedThisFrame() && _canShoot)
+        {
+            
+            Shoot();
+            //Attack();
+            //animator.SetTrigger("Attack");
+        }
+
+        if(_canShoot)
+        {
+            ShootPowerUp();
+        }
 
     }
 
+void ShootPowerUp()
+{
+    _powerUpTimer += Time.deltaTime;
+
+    if(_powerUpTimer >= _powerUpDuration)
+    {
+        _canShoot = false;
+    }
+}
     public void Bounce()
 {
     rBody2D.linearVelocity = new Vector2(rBody2D.linearVelocity.x, 0);
@@ -166,6 +202,34 @@ void JumpSound() //Creamos una función la cual llamamos en VoidStart para no en
         
 
 
+    }
+
+    void Shoot ()
+    {
+
+        Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
+
+    }
+
+    void Attack()
+    {
+        if(attackHitBox.activeInHierarchy)
+        {
+            attackHitBox.SetActive(false);
+        }
+        else
+        {
+            attackHitBox.SetActive(true);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+       if(collider.gameObject.CompareTag("PowerUp"))
+       {
+        _powerUpTimer = 0;
+        _canShoot = true;
+       } 
     }
 
 }

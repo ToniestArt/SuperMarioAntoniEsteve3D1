@@ -5,7 +5,7 @@ public class GroundSensor : MonoBehaviour
 
 PlayerController _playerScript;
 public bool isGrounded;
-
+public int groundDamage = 1;
 
 void Awake ()
 {
@@ -28,7 +28,7 @@ void OnTriggerEnter2D(Collider2D collision)
         _playerScript.Bounce();
         
         Goomba _enemyScript = collision.gameObject.GetComponent<Goomba>();
-        _enemyScript.takeDamage();
+        _enemyScript.takeDamage(groundDamage, Vector3.zero, 0);
         
 
     }
